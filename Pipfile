@@ -11,6 +11,8 @@ librosa = "*"
 deepspeech = "*"
 surfboard = "*"
 matplotlib = "*"
+altair = "*"
+ipykernel = "*"
 
 [requires]
 python_version = "3.8"
