@@ -130,3 +130,5 @@ dmypy.json
 resources/.DS_Store
 .vscode/settings.json
 .DS_Store
+deepspeech-0.7.4-models.pbmm
+deepspeech-0.7.4-models.scorer
