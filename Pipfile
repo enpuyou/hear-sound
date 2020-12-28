@@ -13,6 +13,8 @@ surfboard = "*"
 matplotlib = "*"
 altair = "*"
 ipykernel = "*"
+praat-parselmouth = "*"
+seaborn = "*"
 
 [requires]
 python_version = "3.8"
