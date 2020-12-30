@@ -11,6 +11,7 @@ librosa = "^0.8.0"
 matplotlib = "^3.3.3"
 praat-parselmouth = "^0.3.3"
 deepspeech = "^0.9.3"
+audio-to-midi = "^2020.7"
 
 [tool.poetry.dev-dependencies]
 
