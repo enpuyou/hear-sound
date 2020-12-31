@@ -12,6 +12,9 @@ matplotlib = "^3.3.3"
 praat-parselmouth = "^0.3.3"
 deepspeech = "^0.9.3"
 audio-to-midi = "^2020.7"
+isobar = "^0.1.1"
+python-rtmidi = "^1.4.6"
+mido = "^1.2.9"
 
 [tool.poetry.dev-dependencies]
 
