@@ -1,5 +1,6 @@
 import mido
 from time import sleep
+from scipy.signal import medfilt
 
 midibus_name = "Python"
 
