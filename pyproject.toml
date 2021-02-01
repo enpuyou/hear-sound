@@ -16,6 +16,7 @@ isobar = "^0.1.1"
 python-rtmidi = "^1.4.6"
 mido = "^1.2.9"
 scipy = "^1.5.4"
+sounddevice = "^0.4.1"
 
 [tool.poetry.dev-dependencies]
 
