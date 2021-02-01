@@ -21,7 +21,7 @@ def note_off(note, velocity=64, time=2):
     return mido.Message("note_off", note=note, velocity=velocity, time=time)
 
 
-outport = mido.open_output(f'IAC Driver {midibus_name}')
+outport = mido.open_output(f"IAC Driver {midibus_name}")
 
 
 def major_chord(root, duration):
@@ -64,7 +64,7 @@ while True:
 def midi_to_notes(midi, fs, hop, smooth, minduration):
 
     # smooth midi pitch sequence first
-    if (smooth > 0):
+    if smooth > 0:
         filter_duration = smooth  # in seconds
         filter_size = int(filter_duration * fs / float(hop))
         if filter_size % 2 == 0:

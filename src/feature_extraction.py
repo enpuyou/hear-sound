@@ -1,4 +1,5 @@
 from surfboard.sound import Waveform
+
 # import numpy as np
 import pandas as pd
 import altair as alt
@@ -16,5 +17,5 @@ f0_contour = sound.f0_contour()
 df = pd.DataFrame(f0_contour[0], columns=["pitch"])
 df["temp"] = df.index
 print(df)
-alt.renderers.enable('mimetype')
+alt.renderers.enable("mimetype")
 alt.Chart(df).mark_line().encode(x="temp", y="pitch")
