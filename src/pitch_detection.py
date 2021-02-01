@@ -44,7 +44,7 @@ def to_int_data(raw_data):
     """Converts raw bytes data to ."""
     return np.array(
         [
-            int.from_bytes(raw_data[i : i + 2], byteorder="little", signed=True)
+            int.from_bytes(raw_data[i: i + 2], byteorder="little", signed=True)
             for i in range(0, len(raw_data), 2)
         ]
     )
@@ -106,23 +106,23 @@ if __name__ == "__main__":
         input=True,
         stream_callback=callback_in,
     )
-    stream_out = p.open(
-        format=FORMAT,
-        channels=CHANNELS,
-        rate=RATE,
-        output=True,
-        stream_callback=callback_out,
-    )
+    # stream_out = p.open(
+    #     format=FORMAT,
+    #     channels=CHANNELS,
+    #     rate=RATE,
+    #     output=True,
+    #     stream_callback=callback_out,
+    # )
 
     stream_in.start_stream()
-    stream_out.start_stream()
+    # stream_out.start_stream()
 
     txt = input()  # stream until enter key press
 
     stream_in.stop_stream()
     stream_in.close()
-    stream_out.stop_stream()
-    stream_out.close()
+    # stream_out.stop_stream()
+    # stream_out.close()
 
     p.terminate()
 
