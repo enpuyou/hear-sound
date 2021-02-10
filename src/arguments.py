@@ -56,4 +56,4 @@ def parse(args):
         help="sampling rate of audio device",
     )
     arguments = parser.parse_args(args)
-    return arguments
+    return arguments, parser
