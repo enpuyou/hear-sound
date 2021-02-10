@@ -86,6 +86,8 @@ def audio_callback(indata, frames, time, status):
     """
     Sounddevice callback that passes the microphone data.
     This function stores it in the global variable buf
+    It obtains audio data from the input channels and
+    simply forwards everything to the output channels
     """
     if status:
         print(status, file=sys.stderr)
@@ -104,6 +106,8 @@ def audio_callback(indata, frames, time, status):
     buf[: (factor - 1) * len(indata)] = buf[len(indata) :]
     buf[(factor - 1) * len(indata) :] = (indata.reshape((len(indata))))[:]
     lock.release()
+    global volume_norm
+    volume_norm = int(np.linalg.norm(indata)*10)
 
 
 def compute_pitch():
@@ -147,12 +151,26 @@ def compute_pitch():
         if max_ind < len(fft):
             fft = fft[1:max_ind]
 
+        # compute amplitude
+        # amplitudes = 2 / args.samplerate * np.abs(fft)
+        velocity = volume_norm * 10
+        # print(velocity)
+        if velocity > 127:
+            velocity = 127
+        # velocity = np.sqrt(
+        #                 np.float_power(fft.real, 2)
+        #                 + np.float_power(fft.imag, 2)
+        #             )
+        # print(velocity)
+        # velocity = min(int(127 * (velocity / bin_value)), 127)
+
         # Compute a mean of the neighboring FFT bins
         acc = 0
         avg_sum = 0
         max_value = np.max(fft)
         center = -1
         idx = 0
+
         # Find peak
 
         # while center < 0 and idx < len(fft):
@@ -191,23 +209,55 @@ def compute_pitch():
                     import math
 
                     midinote = 69 + 12 * math.log2(last_freq / 440)
-                    outport.send(note(int(midinote)))
+                    outport.send(note(int(midinote), int(velocity)))
 
 
-try:
-    if args.list_devices:
-        print(sd.query_devices())
-        parser.exit(0)
+def print_sound(indata, outdata, frames, time, status):
+    volume_norm = np.linalg.norm(indata)*10
+    print(volume_norm)
 
-    stream = sd.InputStream(
-        device=args.device,
-        channels=1,
-        samplerate=args.samplerate,
-        callback=audio_callback,
-    )
 
-    with stream:
-        compute_pitch()
+if __name__ == '__main__':
+    try:
+        if args.list_devices:
+            print(sd.query_devices())
+            parser.exit(0)
 
-except Exception as e:
-    parser.exit(type(e).__name__ + ": " + str(e))
+        # low level stream
+        """
+        callback (callable, optional) – User-supplied function to consume,
+        process or generate audio data in response to requests from an active
+        stream. When a stream is running, PortAudio calls the stream callback
+        periodically. The callback function is responsible for processing and
+        filling input and output buffers, respectively.
+
+        If no callback is given, the stream will be opened in
+        “blocking read/write” mode. In blocking mode, the client can receive
+        sample data using read() and write sample data using write(), the
+        number of frames that may be read or written without blocking is
+        returned by read_available and write_available, respectively.
+
+        The callback must have this signature:
+
+        callback(indata: ndarray, outdata: ndarray, frames: int,
+                time: CData, status: CallbackFlags) -> None
+        The first and second argument are the input and output buffer,
+        respectively, as two-dimensional numpy.ndarray with one column per
+        channel (i.e. with a shape of (frames, channels)) and with a data type
+        specified by dtype. The output buffer contains uninitialized data and
+        the callback is supposed to fill it with proper audio data. If no data
+        is available, the buffer should be filled with zeros
+        (e.g. by using outdata.fill(0)).
+        """
+        stream = sd.InputStream(
+            device=args.device,
+            channels=1,
+            samplerate=args.samplerate,
+            callback=audio_callback,
+        )
+
+        with stream:
+            compute_pitch()
+
+    except Exception as e:
+        parser.exit(type(e).__name__ + ": " + str(e))
