@@ -12,8 +12,16 @@ midibus_name = "Python"
 #     outport.send(msg)
 #     sleep(.5)
 
-# some example using mido from https://natespilman.com/blog/playing-chords-with-mido-and-python/
+
+# some example using mido from
+# https://natespilman.com/blog/playing-chords-with-mido-and-python/
 def note(note, velocity=64, time=2):
+    """
+    note: midi note
+    velocity: "how fast the note was struck or released" - dynamic
+    channel: 0..15
+    time: "not included in the encoded message"
+    """
     return mido.Message("note_on", note=note, velocity=velocity, time=time)
 
 
@@ -34,6 +42,50 @@ def major_chord(root, duration):
     outport.send(note_off(root + 7))
 
 
+def play(root, duration=0.2):
+    if root % 2 == 1:
+        fourths(root)
+        minor_chord(root, duration)
+    else:
+        major_seventh(root, duration)
+        sleep(0.5)
+        major_seventh(root + 14, duration)
+        fifth_scale(root, duration)
+
+
+def fifths(root, duration=0.2):
+    for i in range(20):
+        if root + i * 7 > 127:
+            break
+        outport.send(note(root + i * 7))
+    sleep(duration)
+    for i in range(20):
+        if root + i * 7 > 127:
+            break
+        outport.send(note_off(root + i * 7))
+
+
+def fifth_scale(root, duration=0.1):
+    for i in range(20):
+        if root + i * 7 > 127:
+            break
+        outport.send(note(root + i * 7))
+        sleep(0.1)
+        outport.send(note_off(root + i * 7))
+
+
+def fourths(root, duration=0.2):
+    for i in range(20):
+        if root + i * 5 > 127:
+            break
+        outport.send(note(root + i * 5))
+    sleep(duration)
+    for i in range(20):
+        if root + i * 5 > 127:
+            break
+        outport.send(note_off(root + i * 5))
+
+
 def minor_chord(root, duration):
     outport.send(note(root))
     outport.send(note(root + 3))
@@ -44,19 +96,36 @@ def minor_chord(root, duration):
     outport.send(note_off(root + 7))
 
 
+def major_seventh(root, duration):
+    outport.send(note(root))
+    outport.send(note(root + 3))
+    outport.send(note(root + 7))
+    outport.send(note(root + 11))
+    sleep(duration)
+    outport.send(note_off(root))
+    outport.send(note_off(root + 3))
+    outport.send(note_off(root + 7))
+    outport.send(note(root + 11))
+
+
 C = 60
 G = 55
 A = 57
 F = 53
 
-while True:
-    major_chord(C, 1)
-    major_chord(G, 1)
-    minor_chord(A, 1)
-    major_chord(F, 1)
-    major_chord(F, 1)
-    major_chord(G, 1)
-    major_chord(C, 2)
+# major_chord(C, 10)
+
+# outport.send(note(C, time=1))
+outport.send(note_off(C))
+
+# while True:
+#     major_chord(C, 1)
+#     major_chord(G, 1)
+#     minor_chord(A, 1)
+#     major_chord(F, 1)
+#     major_chord(F, 1)
+#     major_chord(G, 1)
+#     major_chord(C, 2)
 
 
 # midi to note example from https://github.com/justinsalamon/
