@@ -1,16 +1,16 @@
 import mido
 from time import sleep
 from scipy.signal import medfilt
+import random
 
 midibus_name = "Python"
 
-# repeating C
-# middleC = 60
-# while True:
-#     msg = mido.Message('note_on', note=middleC, velocity=64)
-#     outport = mido.open_output(f'IAC Driver {midibus_name}')
-#     outport.send(msg)
-#     sleep(.5)
+outport = mido.open_output(f"IAC Driver {midibus_name}")
+
+C = 60
+G = 55
+A = 57
+F = 53
 
 
 # some example using mido from
@@ -29,94 +29,205 @@ def note_off(note, velocity=64, time=2):
     return mido.Message("note_off", note=note, velocity=velocity, time=time)
 
 
-outport = mido.open_output(f"IAC Driver {midibus_name}")
-
-
-def major_chord(root, duration):
-    outport.send(note(root))
-    outport.send(note(root + 4))
-    outport.send(note(root + 7))
+def major_chord(root, velocity=64, duration=0.2):
+    """Major chord from the root note"""
+    if root + 7 > 127:
+        return
+    outport.send(note(root, velocity))
+    outport.send(note(root + 4, velocity))
+    outport.send(note(root + 7, velocity))
     sleep(duration)
-    outport.send(note_off(root))
-    outport.send(note_off(root + 4))
-    outport.send(note_off(root + 7))
+    outport.send(note_off(root, velocity))
+    outport.send(note_off(root + 4, velocity))
+    outport.send(note_off(root + 7, velocity))
 
 
-def play(root, duration=0.2):
-    if root % 2 == 1:
-        fourths(root)
-        minor_chord(root, duration)
-    else:
-        major_seventh(root, duration)
-        sleep(0.5)
-        major_seventh(root + 14, duration)
-        fifth_scale(root, duration)
-
-
-def fifths(root, duration=0.2):
-    for i in range(20):
-        if root + i * 7 > 127:
-            break
-        outport.send(note(root + i * 7))
+def minor_chord(root, velocity=64, duration=0.2):
+    """Minor chord based on the root node"""
+    if root + 7 > 127:
+        return
+    outport.send(note(root, velocity))
+    outport.send(note(root + 3, velocity))
+    outport.send(note(root + 7, velocity))
     sleep(duration)
-    for i in range(20):
-        if root + i * 7 > 127:
-            break
-        outport.send(note_off(root + i * 7))
+    outport.send(note_off(root, velocity))
+    outport.send(note_off(root + 3, velocity))
+    outport.send(note_off(root + 7, velocity))
 
 
-def fifth_scale(root, duration=0.1):
-    for i in range(20):
+def major_seventh(root, velocity=64, duration=0.2):
+    """Major seventh chord based on root node"""
+    if root + 11 > 127:
+        return
+    outport.send(note(root, velocity))
+    outport.send(note(root + 4, velocity))
+    outport.send(note(root + 7, velocity))
+    outport.send(note(root + 11, velocity))
+    sleep(duration)
+    outport.send(note_off(root, velocity))
+    outport.send(note_off(root + 4, velocity))
+    outport.send(note_off(root + 7, velocity))
+    outport.send(note_off(root + 11, velocity))
+
+
+def minor_seventh(root, velocity=64, duration=0.2):
+    """Minor seventh chord based on root node"""
+    if root + 10 > 127:
+        return
+    outport.send(note(root, velocity))
+    outport.send(note(root + 3, velocity))
+    outport.send(note(root + 7, velocity))
+    outport.send(note(root + 10, velocity))
+    sleep(duration)
+    outport.send(note_off(root, velocity))
+    outport.send(note_off(root + 3, velocity))
+    outport.send(note_off(root + 7, velocity))
+    outport.send(note_off(root + 10, velocity))
+
+
+def dom_seventh(root, velocity=64, duration=0.2):
+    """Dominate seventh chord based on root node"""
+    if root + 10 > 127:
+        return
+    outport.send(note(root, velocity))
+    outport.send(note(root + 4, velocity))
+    outport.send(note(root + 7, velocity))
+    outport.send(note(root + 10, velocity))
+    sleep(duration)
+    outport.send(note_off(root, velocity))
+    outport.send(note_off(root + 4, velocity))
+    outport.send(note_off(root + 7, velocity))
+    outport.send(note_off(root + 10, velocity))
+
+
+def dim_seventh(root, velocity=64, duration=0.2):
+    """diminished seventh chord based on root node"""
+    if root + 9 > 127:
+        return
+    outport.send(note(root, velocity))
+    outport.send(note(root + 3, velocity))
+    outport.send(note(root + 6, velocity))
+    outport.send(note(root + 9, velocity))
+    sleep(duration)
+    outport.send(note_off(root, velocity))
+    outport.send(note_off(root + 3, velocity))
+    outport.send(note_off(root + 6, velocity))
+    outport.send(note_off(root + 9, velocity))
+
+
+def half_dim_seventh(root, velocity=64, duration=0.2):
+    """half diminished seventh chord based on root node"""
+    if root + 10 > 127:
+        return
+    outport.send(note(root, velocity))
+    outport.send(note(root + 3, velocity))
+    outport.send(note(root + 6, velocity))
+    outport.send(note(root + 10, velocity))
+    sleep(duration)
+    outport.send(note_off(root, velocity))
+    outport.send(note_off(root + 3, velocity))
+    outport.send(note_off(root + 6, velocity))
+    outport.send(note_off(root + 10, velocity))
+
+
+def aug_seventh(root, velocity=64, duration=0.2):
+    """augmented seventh chord based on root node"""
+    if root + 11 > 127:
+        return
+    outport.send(note(root, velocity))
+    outport.send(note(root + 4, velocity))
+    outport.send(note(root + 8, velocity))
+    outport.send(note(root + 11, velocity))
+    sleep(duration)
+    outport.send(note_off(root, velocity))
+    outport.send(note_off(root + 4, velocity))
+    outport.send(note_off(root + 8, velocity))
+    outport.send(note_off(root + 11, velocity))
+
+
+def fifths(root, velocity=64, duration=0.2):
+    """Stacking fifths harmony that are aboved the root note"""
+    for i in range(25):
         if root + i * 7 > 127:
             break
-        outport.send(note(root + i * 7))
+        outport.send(note(root + i * 7, velocity))
+    sleep(duration)
+    for i in range(25):
+        if root + i * 7 > 127:
+            break
+        outport.send(note_off(root + i * 7, velocity))
+
+
+def fifth_scale(root, velocity=64, duration=0.1):
+    """Stacking fifths scale that are aboved the root note"""
+    for i in range(25):
+        if root + i * 7 > 127:
+            break
+        outport.send(note(root + i * 7, velocity))
         sleep(0.1)
-        outport.send(note_off(root + i * 7))
+        outport.send(note_off(root + i * 7, velocity))
 
 
-def fourths(root, duration=0.2):
-    for i in range(20):
+def fourths(root, velocity=64, duration=0.2):
+    """Stacking fourths harmony that are aboved the root note"""
+    for i in range(25):
         if root + i * 5 > 127:
             break
-        outport.send(note(root + i * 5))
+        outport.send(note(root + i * 5, velocity))
     sleep(duration)
-    for i in range(20):
+    for i in range(25):
         if root + i * 5 > 127:
             break
-        outport.send(note_off(root + i * 5))
+        outport.send(note_off(root + i * 5, velocity))
 
 
-def minor_chord(root, duration):
-    outport.send(note(root))
-    outport.send(note(root + 3))
-    outport.send(note(root + 7))
-    sleep(duration)
-    outport.send(note_off(root))
-    outport.send(note_off(root + 3))
-    outport.send(note_off(root + 7))
+def fourth_scale(root, velocity=64, duration=0.1):
+    """Stacking fourths scale that are aboved the root note"""
+    for i in range(25):
+        if root + i * 5 > 127:
+            break
+        outport.send(note(root + i * 5, velocity))
+        sleep(random.randint(1, 10)/100)
+        outport.send(note_off(root + i * 5, velocity))
 
 
-def major_seventh(root, duration):
-    outport.send(note(root))
-    outport.send(note(root + 3))
-    outport.send(note(root + 7))
-    outport.send(note(root + 11))
-    sleep(duration)
-    outport.send(note_off(root))
-    outport.send(note_off(root + 3))
-    outport.send(note_off(root + 7))
-    outport.send(note(root + 11))
+def fourth_scale_down(root, velocity=64, duration=0.1):
+    """Downward fourths scale that are aboved the root note"""
+    for i in range(25):
+        if root - i * 5 < 0:
+            break
+        outport.send(note(root - i * 5, velocity))
+        sleep(random.randint(1, 10)/100)
+        # outport.send(note_off(root - i * 5, velocity))
+        sleep(random.randint(1, 30)/100)
 
 
-C = 60
-G = 55
-A = 57
-F = 53
+def fifth_scale_down(root, velocity=64, duration=0.1):
+    """Stacking fifths scale that are aboved the root note"""
+    for i in range(25):
+        if root - i * 7 < 0:
+            break
+        outport.send(note(root - i * 7, velocity))
+        sleep(random.randint(1, 10)/100)
+        outport.send(note_off(root - i * 7, velocity))
+        sleep(random.randint(1, 20)/100)
 
-# major_chord(C, 10)
 
-# outport.send(note(C, time=1))
-outport.send(note_off(C))
+def triad_octave(root, velocity=64, duration=0.1):
+    for i in range(10):
+        if root - i * 7 - 5 < 0:
+            break
+        # dom_seventh(root + i * 12, velocity)
+        outport.send(note(root - i * 7, velocity))
+        sleep(random.randint(1, 10)/100)
+        outport.send(note(root - i * 7, velocity))
+        sleep(random.randint(1, 10)/100)
+        outport.send(note(root - i * 7 - 5, velocity))
+        sleep(random.randint(1, 10)/100)
+        outport.send(note(root - i * 7 - 5, velocity))
+        sleep(0.2)
+        # sleep(random.randint(1, 10)/100)
+        # outport.send(note_off(root + i * 7, velocity))
 
 # while True:
 #     major_chord(C, 1)
@@ -126,6 +237,27 @@ outport.send(note_off(C))
 #     major_chord(F, 1)
 #     major_chord(G, 1)
 #     major_chord(C, 2)
+
+
+
+
+def play(root, velocity=64, duration=0.2):
+    # if root % 2 == 1:
+    #     fourth_scale_down(root, velocity)
+    #     minor_chord(root, velocity, duration)
+        # fourth_scale(root, velocity)
+    # else:
+        # major_seventh(root, velocity, duration)
+        # sleep(0.1)
+        # minor_seventh(root + 14, velocity, duration)
+        # sleep(0.15)
+        # major_seventh(root + 7, velocity, duration)
+        # sleep(0.1)
+        # fifths(root, velocity, duration)
+        # fifth_scale(root, velocity)
+        # fifth_scale(root, velocity, duration)
+    # fourth_scale(root, velocity, duration)
+    triad_octave(root, velocity)
 
 
 # midi to note example from https://github.com/justinsalamon/
