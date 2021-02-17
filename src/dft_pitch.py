@@ -8,16 +8,12 @@ import numpy as np
 import sounddevice as sd
 import time
 
-from .midi import note
-from .arguments import parse
+from midi import note, fifths, play
+from arguments import parse
 from threading import Lock
 
 from scipy.signal import blackmanharris
 from scipy.signal import find_peaks
-
-import mido
-
-outport = mido.open_output(f"IAC Driver Python")
 
 
 buf = np.zeros(1)  # Microphone data buffer
@@ -46,11 +42,13 @@ def audio_callback(indata, frames, time, status):
         print("Samplerate is: " + str(args.samplerate))
         print("Bin value is: " + str(args.samplerate / len(buf)))
 
-    buf[: (factor - 1) * len(indata)] = buf[len(indata) :]
-    buf[(factor - 1) * len(indata) :] = (indata.reshape((len(indata))))[:]
+    buf[: (factor - 1) * len(indata)] = buf[len(indata):]
+    buf[(factor - 1) * len(indata):] = (indata.reshape((len(indata))))[:]
     lock.release()
     global volume_norm
-    volume_norm = int(np.linalg.norm(indata)*10)
+    global norm
+    norm = np.linalg.norm(indata)
+    volume_norm = int(np.linalg.norm(indata) * 10)
 
 
 def compute_pitch():
@@ -91,6 +89,7 @@ def compute_pitch():
         bin_value = args.samplerate / len(buf2)
         max_ind = int(20000 / bin_value)
         fft = abs(np.fft.fft(buf2))
+        # print(max(fft)/norm)
         if max_ind < len(fft):
             fft = fft[1:max_ind]
 
@@ -132,7 +131,7 @@ def compute_pitch():
                     avg_sum += fft[center + i]
 
             # Find the note associated to the frequency
-            note_ind = int(np.rint((np.log(acc / avg_sum / 440) / np.log(sq12_2)))) % 12
+            note_ind = int(np.rint((np.log(acc/avg_sum/440)/np.log(sq12_2)))) % 12
             if note_ind < 0:
                 note_ind += 12
 
@@ -152,15 +151,17 @@ def compute_pitch():
                     import math
 
                     midinote = 69 + 12 * math.log2(last_freq / 440)
-                    outport.send(note(int(midinote), int(velocity)))
+                    play(root=int(midinote), velocity=int(velocity))
+                    # outport.send(note(int(midinote), int(velocity)))
 
 
 def print_sound(indata, outdata, frames, time, status):
-    volume_norm = np.linalg.norm(indata)*10
+    volume_norm = np.linalg.norm(indata) * 10
     print(volume_norm)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
+    global args
     args, parser = parse(sys.argv[1:])
     try:
         if args.list_devices:
@@ -193,6 +194,7 @@ if __name__ == '__main__':
         is available, the buffer should be filled with zeros
         (e.g. by using outdata.fill(0)).
         """
+        print(args.device)
         stream = sd.InputStream(
             device=args.device,
             channels=1,
