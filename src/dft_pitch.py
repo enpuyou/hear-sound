@@ -15,6 +15,7 @@ from threading import Lock
 from scipy.signal import blackmanharris
 from scipy.signal import find_peaks
 
+import threading
 
 buf = np.zeros(1)  # Microphone data buffer
 lock = Lock()  # Buffer lock
@@ -151,7 +152,9 @@ def compute_pitch():
                     import math
 
                     midinote = 69 + 12 * math.log2(last_freq / 440)
-                    play(root=int(midinote), velocity=int(velocity))
+                    thread = threading.Thread(target=play, args=(int(midinote), int(velocity)))
+                    thread.start()
+                    # play(root=int(midinote), velocity=int(velocity))
                     # outport.send(note(int(midinote), int(velocity)))
 
 
