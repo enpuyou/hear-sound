@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 # inspired and modified based on https://devpost.com/software/pitch-detection
 
-import argparse
-import queue
 import sys
 import numpy as np
 import sounddevice as sd
 import time
+import math
 
-from midi import note, fifths, play
+from midi import play, midi_number_to_note
 from arguments import parse
 from threading import Lock
 
@@ -145,17 +144,16 @@ def compute_pitch():
             last_note = note_ind
             last_freq = acc / avg_sum
 
+            # print(note_ind)
             # Remove noise and frequencies that are too low to be interesting
             if (np.average(fft) > args.noise_threshold) and last_freq > 40:
                 if args.repeat_count < 1 or same_count == args.repeat_count:
-                    print("Pitch: " + notes[note_ind] + " (" + str(last_freq) + " Hz)")
-                    import math
+                    midinote = int(69 + 12 * math.log2(last_freq / 440))
+                    note_name = midi_number_to_note(midinote)
+                    print(f"Pitch: {note_name} ({last_freq} Hz)")
 
-                    midinote = 69 + 12 * math.log2(last_freq / 440)
-                    thread = threading.Thread(target=play, args=(int(midinote), int(velocity)))
+                    thread = threading.Thread(target=play, args=(midinote, int(velocity)))
                     thread.start()
-                    # play(root=int(midinote), velocity=int(velocity))
-                    # outport.send(note(int(midinote), int(velocity)))
 
 
 def print_sound(indata, outdata, frames, time, status):
