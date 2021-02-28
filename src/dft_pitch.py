@@ -198,7 +198,7 @@ if __name__ == "__main__":
         print(args.device)
         stream = sd.InputStream(
             device=args.device,
-            channels=1,
+            channels=args.channels,
             samplerate=args.samplerate,
             callback=audio_callback,
         )
