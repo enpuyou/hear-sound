@@ -18,6 +18,13 @@ def parse(args):
         help="show list of audio devices and exit",
     )
     parser.add_argument(
+        '-c',
+        '--channels',
+        type=int,
+        default=1,
+        help='number of channels'
+    )
+    parser.add_argument(
         "-b",
         "--bin-value",
         type=float,
