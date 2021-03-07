@@ -236,6 +236,14 @@ version = "8.0.1"
 
 [[package]]
 category = "main"
+description = "Python interface to CMU Sphinxbase and Pocketsphinx libraries"
+name = "pocketsphinx"
+optional = false
+python-versions = "*"
+version = "0.1.15"
+
+[[package]]
+category = "main"
 description = "Pooch manages your Python library's sample data files: it automatically downloads and stores them in a local directory, with support for versioning and corruption checks."
 name = "pooch"
 optional = false
@@ -449,6 +457,14 @@ numpy = ["numpy"]
 
 [[package]]
 category = "main"
+description = "Library for performing speech recognition, with support for several engines and APIs, online and offline."
+name = "speechrecognition"
+optional = false
+python-versions = "*"
+version = "3.8.1"
+
+[[package]]
+category = "main"
 description = "threadpoolctl"
 name = "threadpoolctl"
 optional = false
@@ -469,7 +485,7 @@ secure = ["pyOpenSSL (>=0.14)", "cryptography (>=1.3.4)", "idna (>=2.0.0)", "cer
 socks = ["PySocks (>=1.5.6,<1.5.7 || >1.5.7,<2.0)"]
 
 [metadata]
-content-hash = "c6e59a146fc94769edddffa9ab56be24f50478655abf0a8885377f0278faed93"
+content-hash = "6dd27f75a09e2e1fbeaa642ca60768c6ce4d341d5031f6e804a46b3bb3b08d65"
 python-versions = "^3.8"
 
 [metadata.files]
@@ -751,6 +767,29 @@ pillow = [
     {file = "Pillow-8.0.1-pp37-pypy37_pp73-win32.whl", hash = "sha256:8de332053707c80963b589b22f8e0229f1be1f3ca862a932c1bcd48dafb18dd8"},
     {file = "Pillow-8.0.1.tar.gz", hash = "sha256:11c5c6e9b02c9dac08af04f093eb5a2f84857df70a7d4a6a6ad461aca803fb9e"},
 ]
+pocketsphinx = [
+    {file = "pocketsphinx-0.1.15-cp27-cp27m-macosx_10_10_x86_64.whl", hash = "sha256:f0fdfe162bc99590e8666251a55d6311ac4cb137482a871f93d38b1834251253"},
+    {file = "pocketsphinx-0.1.15-cp27-cp27m-macosx_10_11_x86_64.whl", hash = "sha256:855c6761d008cdb4fc2d9aded5c1a0f163ce901f8b64075d36a88ae7814af755"},
+    {file = "pocketsphinx-0.1.15-cp27-cp27m-macosx_10_12_x86_64.whl", hash = "sha256:e2a4f22cddec68e75e796068ae82095dd8dba1187aa3a8abe305bdc6c565e8b4"},
+    {file = "pocketsphinx-0.1.15-cp27-cp27m-macosx_10_13_x86_64.whl", hash = "sha256:9b477fcf8829f53ab470fdcf3fa77db00d71eee321353d10b306f0e5b95e8591"},
+    {file = "pocketsphinx-0.1.15-cp27-cp27m-win32.whl", hash = "sha256:1f3eaca1b49d579e89e909bb101ad033493a1c9dddd8c72afd6b755c70365d56"},
+    {file = "pocketsphinx-0.1.15-cp27-cp27m-win_amd64.whl", hash = "sha256:41d2107b74597cf8444f9e36b91363d60097b4fa88a9c750760a85209deef439"},
+    {file = "pocketsphinx-0.1.15-cp35-cp35m-win32.whl", hash = "sha256:3f438f9f5729a7629c122784697884cff5f2a2e022aef270a4081985d15eae88"},
+    {file = "pocketsphinx-0.1.15-cp35-cp35m-win_amd64.whl", hash = "sha256:667152b4139ba46de172fa627404fe284b2ecd5d6bfcfe905b068801324ba7fb"},
+    {file = "pocketsphinx-0.1.15-cp36-cp36m-macosx_10_10_x86_64.whl", hash = "sha256:8ca14694d7cc111796e63c13c61420553a43a29c63c386c975bfc213d8da3e55"},
+    {file = "pocketsphinx-0.1.15-cp36-cp36m-macosx_10_11_x86_64.whl", hash = "sha256:bfbbeddb20196abbb04b8f7b5dc03628c7df0dc87e760326d76d37b27fb9d6f9"},
+    {file = "pocketsphinx-0.1.15-cp36-cp36m-macosx_10_12_x86_64.whl", hash = "sha256:72286c3ecaa6641d426ca80bd4d1b3241c26b1703af419429ef779719e007443"},
+    {file = "pocketsphinx-0.1.15-cp36-cp36m-macosx_10_13_x86_64.whl", hash = "sha256:1c2a8cc7f2032f9e8214f5e4e864511fe37bfd27f2045fbf8aed9c54569dc881"},
+    {file = "pocketsphinx-0.1.15-cp36-cp36m-win32.whl", hash = "sha256:d20b497369bd108dd135b3d4eed1d3edd2c8b51b1b696e67600adbfff2fe3316"},
+    {file = "pocketsphinx-0.1.15-cp36-cp36m-win_amd64.whl", hash = "sha256:71e7cf04433615e21ad3c28a2cc2daa43e96e570f2611f142eb3468f4f7789a6"},
+    {file = "pocketsphinx-0.1.15.tar.gz", hash = "sha256:34d290745c7dbe6fa2cac9815b5c19d10f393e528ecd70e779c21ebc448f9b63"},
+    {file = "pocketsphinx-0.1.15.win-amd64-py2.7.exe", hash = "sha256:cbbb96e5ff22cf06f144987aa209c77edf99e76764e4d671cbd4dda28825d192"},
+    {file = "pocketsphinx-0.1.15.win-amd64-py3.5.exe", hash = "sha256:de4e4ae2c1ef412ad5519ca5fc44744a4374970a1f49d61417072808bf426c63"},
+    {file = "pocketsphinx-0.1.15.win-amd64-py3.6.exe", hash = "sha256:7f48fcfd16c913a3475b1b58c132bd06c9ad5cd9cf1464c3d71fc4ad8a5ccc6f"},
+    {file = "pocketsphinx-0.1.15.win32-py2.7.exe", hash = "sha256:fd54d61f226c8f3906ef948579249db999a8119069303cec5de48e770e0e2361"},
+    {file = "pocketsphinx-0.1.15.win32-py3.5.exe", hash = "sha256:1fa4acdd2350d483a75ea2dc51d5698fdc240922f17069889cad70700710db2f"},
+    {file = "pocketsphinx-0.1.15.win32-py3.6.exe", hash = "sha256:9f4068789d426c14052bcc184368aece4d6d9ecf998359e958194faffb9c3698"},
+]
 pooch = [
     {file = "pooch-1.3.0-py3-none-any.whl", hash = "sha256:2cec8cbd0515462da1f84446113e77a785029b8514841e0ad344dd57f7924902"},
     {file = "pooch-1.3.0.tar.gz", hash = "sha256:30d448e825904e2d763bbbe418831a788813c32f636b21c8d60ee5f474532898"},
@@ -919,6 +958,9 @@ soundfile = [
     {file = "SoundFile-0.10.2-py2.py3.cp26.cp27.cp32.cp33.cp34.cp35.cp36.pp27.pp32.pp33-none-win32.whl", hash = "sha256:7fe04272cbfb94ab648acb0db31ace0800f5a4cf46e9d45b4d71ddb15abce1a0"},
     {file = "SoundFile-0.10.2-py2.py3.cp26.cp27.cp32.cp33.cp34.cp35.cp36.pp27.pp32.pp33-none-win_amd64.whl", hash = "sha256:80a3d2ed37199ffa7066c097d7b82b8413922e22870b62b54dc264bf0169f4c2"},
     {file = "SoundFile-0.10.2.tar.gz", hash = "sha256:637f6218c867b8cae80f6989634a0813b416b3e6132480d056e6e5a89a921571"},
+]
+speechrecognition = [
+    {file = "SpeechRecognition-3.8.1-py2.py3-none-any.whl", hash = "sha256:4d8f73a0c05ec70331c3bacaa89ecc06dfa8d9aba0899276664cda06ab597e8e"},
 ]
 threadpoolctl = [
     {file = "threadpoolctl-2.1.0-py3-none-any.whl", hash = "sha256:38b74ca20ff3bb42caca8b00055111d74159ee95c4370882bbff2b93d24da725"},

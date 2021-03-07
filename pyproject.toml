@@ -17,6 +17,8 @@ python-rtmidi = "^1.4.6"
 mido = "^1.2.9"
 scipy = "^1.5.4"
 sounddevice = "^0.4.1"
+SpeechRecognition = "^3.8.1"
+pocketsphinx = {path = "../pocketsphinx-python"}
 
 [tool.poetry.dev-dependencies]
 
