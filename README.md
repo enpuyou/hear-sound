@@ -16,6 +16,10 @@ Set up virtual MIDI bus:
 
 https://help.ableton.com/hc/en-us/articles/209774225-How-to-setup-a-virtual-MIDI-bus
 
+### Installation of `pocketsphinx` on Big Sur
+
+https://github.com/bambocher/pocketsphinx-python/issues/67
+
 The default MIDI bus name in `midi.py` is `Python` or `IAC Driver Python`
 
 ## Run Commands
