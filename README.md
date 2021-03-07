@@ -20,6 +20,8 @@ https://help.ableton.com/hc/en-us/articles/209774225-How-to-setup-a-virtual-MIDI
 
 https://github.com/bambocher/pocketsphinx-python/issues/67
 
+https://cmusphinx.github.io/wiki/download/
+
 The default MIDI bus name in `midi.py` is `Python` or `IAC Driver Python`
 
 ## Run Commands
