@@ -22,6 +22,10 @@ https://github.com/bambocher/pocketsphinx-python/issues/67
 
 https://cmusphinx.github.io/wiki/download/
 
+#### Tuning parameters
+
+https://github.com/Uberi/speech_recognition/blob/master/reference/library-reference.rst
+
 ### MIDI bus
 
 The default MIDI bus name in `midi.py` is `Python` or `IAC Driver Python`
