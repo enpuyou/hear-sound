@@ -22,7 +22,13 @@ https://github.com/bambocher/pocketsphinx-python/issues/67
 
 https://cmusphinx.github.io/wiki/download/
 
+### MIDI bus
+
 The default MIDI bus name in `midi.py` is `Python` or `IAC Driver Python`
+
+### Capturing multiple sound devices
+
+https://github.com/spatialaudio/python-sounddevice/issues/154
 
 ## Run Commands
 
