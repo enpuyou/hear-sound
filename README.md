@@ -26,7 +26,7 @@ https://cmusphinx.github.io/wiki/download/
 
 https://github.com/Uberi/speech_recognition/blob/master/reference/library-reference.rst
 
-### MIDI bus
+### Virtual MIDI bus
 
 The default MIDI bus name in `midi.py` is `Python` or `IAC Driver Python`
 
