@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 # inspired and modified based on https://devpost.com/software/pitch-detection
-
 import sys
 import numpy as np
-import sounddevice as sd
 import time
 import math
 
 from midi import play, midi_number_to_note
-from arguments import parse
 from threading import Lock
 
 from scipy.signal import blackmanharris
@@ -19,6 +16,8 @@ import threading
 buf = np.zeros(1)  # Microphone data buffer
 lock = Lock()  # Buffer lock
 fresh_data = True  # Flag to indicate if new data is available
+args = ""
+outport = ""
 
 
 def audio_callback(indata, frames, time, status):
@@ -42,8 +41,8 @@ def audio_callback(indata, frames, time, status):
         print("Samplerate is: " + str(args.samplerate))
         print("Bin value is: " + str(args.samplerate / len(buf)))
 
-    buf[: (factor - 1) * len(indata)] = buf[len(indata):]
-    buf[(factor - 1) * len(indata):] = (indata.reshape((len(indata))))[:]
+    buf[: (factor - 1) * len(indata)] = buf[len(indata) :]
+    buf[(factor - 1) * len(indata) :] = (indata.reshape((len(indata))))[:]
     lock.release()
     global volume_norm
     global norm
@@ -51,7 +50,7 @@ def audio_callback(indata, frames, time, status):
     volume_norm = int(np.linalg.norm(indata) * 10)
 
 
-def compute_pitch():
+def compute_pitch(arg, out):
     """
     Computes the current pitch of the signal in a loop until program
     termination.
@@ -59,9 +58,12 @@ def compute_pitch():
     global buf
     global bin_value
     global fresh_data
+    global args
+    global outport
+    args = arg
+    outport = out
     avg_size = 2
     sq12_2 = 1.05946309
-    notes = ["A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"]
     time.sleep(0.2)
     last_note = 0
     last_freq = 0
@@ -131,7 +133,7 @@ def compute_pitch():
                     avg_sum += fft[center + i]
 
             # Find the note associated to the frequency
-            note_ind = int(np.rint((np.log(acc/avg_sum/440)/np.log(sq12_2)))) % 12
+            note_ind = int(np.rint((np.log(acc / avg_sum / 440) / np.log(sq12_2)))) % 12
             if note_ind < 0:
                 note_ind += 12
 
@@ -152,7 +154,9 @@ def compute_pitch():
                     note_name = midi_number_to_note(midinote)
                     print(f"Pitch: {note_name} ({last_freq} Hz)")
 
-                    thread = threading.Thread(target=play, args=(midinote, int(velocity)))
+                    thread = threading.Thread(
+                        target=play, args=(midinote, outport, int(velocity))
+                    )
                     thread.start()
 
 
@@ -161,50 +165,25 @@ def print_sound(indata, outdata, frames, time, status):
     print(volume_norm)
 
 
-if __name__ == "__main__":
-    global args
-    args, parser = parse(sys.argv[1:])
-    try:
-        if args.list_devices:
-            print(sd.query_devices())
-            parser.exit(0)
+# if __name__ == "__main__":
+#     global args
+#     args, parser = parse(sys.argv[1:])
+#     try:
+#         if args.list_devices:
+#             print(sd.query_devices())
+#             parser.exit(0)
+#         print(args.device)
+#         stream = sd.InputStream(
+#             device=args.device,
+#             channels=args.channels,
+#             samplerate=args.samplerate,
+#             callback=audio_callback,
+#         )
+#         with stream:
+#             compute_pitch()
+#         # for d in range(len(args.device)):
+#         #     pitch_thread = threading.Thread(target=stream, args=(args, d))
+#         #     pitch_thread.start()
 
-        # low level stream
-        """
-        callback (callable, optional) – User-supplied function to consume,
-        process or generate audio data in response to requests from an active
-        stream. When a stream is running, PortAudio calls the stream callback
-        periodically. The callback function is responsible for processing and
-        filling input and output buffers, respectively.
-
-        If no callback is given, the stream will be opened in
-        “blocking read/write” mode. In blocking mode, the client can receive
-        sample data using read() and write sample data using write(), the
-        number of frames that may be read or written without blocking is
-        returned by read_available and write_available, respectively.
-
-        The callback must have this signature:
-
-        callback(indata: ndarray, outdata: ndarray, frames: int,
-                time: CData, status: CallbackFlags) -> None
-        The first and second argument are the input and output buffer,
-        respectively, as two-dimensional numpy.ndarray with one column per
-        channel (i.e. with a shape of (frames, channels)) and with a data type
-        specified by dtype. The output buffer contains uninitialized data and
-        the callback is supposed to fill it with proper audio data. If no data
-        is available, the buffer should be filled with zeros
-        (e.g. by using outdata.fill(0)).
-        """
-        print(args.device)
-        stream = sd.InputStream(
-            device=args.device,
-            channels=args.channels,
-            samplerate=args.samplerate,
-            callback=audio_callback,
-        )
-
-        with stream:
-            compute_pitch()
-
-    except Exception as e:
-        parser.exit(type(e).__name__ + ": " + str(e))
+#     except Exception as e:
+#         parser.exit(type(e).__name__ + ": " + str(e))
