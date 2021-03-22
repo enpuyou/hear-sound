@@ -247,7 +247,7 @@ def fifth_scale_down(root, outport, velocity=64, duration=0.1):
 #     major_chord(C, 2)
 
 
-def play(root, outport, velocity=64, duration=0.2):
+def play(root, outport, velocity=64, duration=3):
     # if root % 2 == 1:
     #     # fourth_scale_down(root, velocity)
     #     # minor_chord(root, velocity, duration)
@@ -263,9 +263,11 @@ def play(root, outport, velocity=64, duration=0.2):
     #     fifths(root, velocity, duration)
     #     fifth_scale(root, velocity)
     #     fifth_scale(root, velocity, duration)
-    print(outport)
     outport.send(note(root, velocity))
-    sleep(10)
+    if duration < 2:
+        duration = 2
+    print(duration)
+    sleep(duration)
     outport.send(note_off(root, velocity))
     # fourth_scale(root, velocity, duration)
     # triad_octave(root, velocity)
