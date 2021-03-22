@@ -1,3 +1,25 @@
+import sys
+
+from arguments import parse
+from dft_pitch import compute_pitch, audio_callback
+from multiprocessing import Process
+
+import mido
+import sounddevice as sd
+
+
+def stream(args, d):
+    stream = sd.InputStream(
+        device=args.device[d],
+        channels=args.channels,
+        samplerate=args.samplerate,
+        callback=audio_callback,
+    )
+    outport = mido.open_output(f"IAC Driver Bus {args.bus[d]}")
+    with stream:
+        compute_pitch(args, outport)
+
+
 if __name__ == "__main__":
     global args
     args, parser = parse(sys.argv[1:])
@@ -33,18 +55,19 @@ if __name__ == "__main__":
         (e.g. by using outdata.fill(0)).
         """
         print(args.device)
-        stream = sd.InputStream(
-            device=args.device,
-            channels=args.channels,
-            samplerate=args.samplerate,
-            callback=audio_callback,
-        )
-
-        with stream:
-            compute_pitch()
-        # for d in range(len(args.device)):
-        #     pitch_thread = threading.Thread(target=stream, args=(args, d))
-        #     pitch_thread.start()
+        if len(args.device) > 1:
+            for i in range(len(args.device)):
+                p = Process(
+                    target=stream,
+                    args=(
+                        args,
+                        i,
+                    ),
+                )
+                p.start()
+        else:
+            print(args.device[0])
+            stream(args, 0)
 
     except Exception as e:
         parser.exit(type(e).__name__ + ": " + str(e))
