@@ -15,7 +15,7 @@ def stream(args, d):
         samplerate=args.samplerate,
         callback=audio_callback,
     )
-    outport = mido.open_output(f"IAC Driver Bus {args.bus[d]}")
+    outport = mido.open_output(args.bus[d])
     with stream:
         compute_pitch(args, outport)
 
@@ -25,7 +25,11 @@ if __name__ == "__main__":
     args, parser = parse(sys.argv[1:])
     try:
         if args.list_devices:
+            print("Sound devices:")
             print(sd.query_devices())
+            print("Virtual MIDI Buses:")
+            for i, v in enumerate(mido.get_output_names()):
+                print(f"   {i} {v}")
             parser.exit(0)
 
         # low level stream

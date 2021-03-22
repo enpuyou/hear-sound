@@ -3,8 +3,6 @@ from time import sleep
 from scipy.signal import medfilt
 import random
 
-print(mido.get_output_names())
-
 
 C = 60
 G = 55
