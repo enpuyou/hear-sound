@@ -53,7 +53,10 @@ def parse(args):
         help="number of times the same note must be repeated to not be considered as noise",
     )
     parser.add_argument(
-        "-d", "--device", type=int_or_str, help="input device (numeric ID or substring)"
+        "-d", "--device", type=int_or_str, nargs="+", help="input device (numeric ID or substring)"
+    )
+    parser.add_argument(
+        "-u", "--bus", type=int_or_str, nargs="+", help="virtual bus"
     )
     parser.add_argument(
         "-r",
