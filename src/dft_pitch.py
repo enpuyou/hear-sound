@@ -138,10 +138,15 @@ def compute_pitch(arg, out):
                 note_ind += 12
 
             # Determine if the new note is the same as the last one
+            if same_count == 0:
+                start = time.time()
             if note_ind == last_note and np.abs((acc / avg_sum) / last_freq - 1) < 0.2:
                 same_count += 1
             else:
                 same_count = 0
+            if same_count == 0:
+                end = time.time()
+                elapsed = round(end - start, 2)
 
             last_note = note_ind
             last_freq = acc / avg_sum
@@ -153,9 +158,8 @@ def compute_pitch(arg, out):
                     midinote = int(69 + 12 * math.log2(last_freq / 440))
                     note_name = midi_number_to_note(midinote)
                     print(f"Pitch: {note_name} ({last_freq} Hz)")
-
                     thread = threading.Thread(
-                        target=play, args=(midinote, outport, int(velocity))
+                        target=play, args=(midinote, outport, int(velocity), elapsed)
                     )
                     thread.start()
 
