@@ -15,7 +15,7 @@ def stream(args, d):
         samplerate=args.samplerate,
         callback=audio_callback,
     )
-    outport = mido.open_output(mido.get_output_names()[args.bus[d]])
+    outport = mido.open_output(bus_names[args.bus[d]])
     with stream:
         compute_pitch(args, outport)
 
@@ -23,12 +23,14 @@ def stream(args, d):
 if __name__ == "__main__":
     global args
     args, parser = parse(sys.argv[1:])
+    global bus_names
+    bus_names = mido.get_output_names()
     try:
         if args.list_devices:
             print("Sound devices:")
             print(sd.query_devices())
             print("Virtual MIDI Buses:")
-            for i, v in enumerate(mido.get_output_names()):
+            for i, v in enumerate(bus_names):
                 print(f"   {i} {v}")
             parser.exit(0)
 
