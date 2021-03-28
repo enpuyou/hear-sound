@@ -264,7 +264,6 @@ def play(root, outport, velocity=64, duration=3):
     outport.send(note(root, velocity))
     if duration < 2:
         duration = 2
-    print(duration)
     sleep(duration)
     outport.send(note_off(root, velocity))
     # fourth_scale(root, velocity, duration)
