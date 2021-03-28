@@ -15,7 +15,7 @@ def stream(args, d):
         samplerate=args.samplerate,
         callback=audio_callback,
     )
-    outport = mido.open_output(args.bus[d])
+    outport = mido.open_output(mido.get_output_names()[args.bus[d]])
     with stream:
         compute_pitch(args, outport)
 
