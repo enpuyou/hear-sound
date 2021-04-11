@@ -5,7 +5,7 @@ import numpy as np
 import time
 import math
 
-from midi import play, midi_number_to_note
+from midi import play, midi_number_to_note, transpose, flip, inverse
 from threading import Lock
 
 from scipy.signal import blackmanharris
@@ -146,10 +146,10 @@ def compute_pitch(arg, out):
             if (np.average(fft) > args.noise_threshold) and last_freq > 40:
                 if args.repeat_count < 1 or same_count == args.repeat_count:
                     midinote = int(69 + 12 * math.log2(last_freq / 440))
-                    note_name = midi_number_to_note(midinote)
-                    print(f"Pitch: {note_name} {velocity} ({last_freq} Hz)")
+                    # note_name = midi_number_to_note(midinote)
+                    print(f"Frequency: {last_freq} Hz")
                     thread = threading.Thread(
-                        target=play, args=(midinote, outport, int(velocity), elapsed)
+                        target=inverse, args=(midinote, outport, int(velocity), elapsed)
                     )
                     thread.start()
 

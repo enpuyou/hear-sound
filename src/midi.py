@@ -2,7 +2,7 @@ import mido
 from time import sleep
 from scipy.signal import medfilt
 import random
-
+import threading
 
 C = 60
 G = 55
@@ -219,55 +219,63 @@ def fifth_scale_down(root, outport, velocity=64, duration=0.1):
         sleep(random.randint(1, 20)/100)
 
 
-# def triad_octave(root, outport, velocity=64, duration=0.1):
-#     for i in range(10):
-#         if root - i * 7 - 5 < 0:
-#             break
-#         # dom_seventh(root + i * 12, velocity)
-#         outport.send(note(root - i * 7, velocity))
-#         sleep(random.randint(1, 10)/100)
-#         outport.send(note(root - i * 7, velocity))
-#         sleep(random.randint(1, 10)/100)
-#         outport.send(note(root - i * 7 - 5, velocity))
-#         sleep(random.randint(1, 10)/100)
-#         outport.send(note(root - i * 7 - 5, velocity))
-#         sleep(0.2)
-        # sleep(random.randint(1, 10)/100)
-        # outport.send(note_off(root + i * 7, velocity))
+def transpose(root, outport, velocity=64, duration=0.1, transpose_range=9, delay_time=2):
+    """play and transpose"""
+    create_thread(root, outport, velocity, duration)
+    sleep(delay_time)
+    root = int(root + transpose_range)
+    create_thread(root, outport, velocity, duration)
 
-# while True:
-#     major_chord(C, 1)
-#     major_chord(G, 1)
-#     minor_chord(A, 1)
-#     major_chord(F, 1)
-#     major_chord(F, 1)
-#     major_chord(G, 1)
-#     major_chord(C, 2)
+
+def inverse(root, outport, velocity=64, duration=0.1, octave=1, delay_time=2):
+    """play and transpose"""
+    inverted = (root // len(NOTES) - 1) * 12 + 11 - root % len(NOTES)
+    create_thread(root, outport, velocity, duration)
+    sleep(delay_time)
+    root = int(inverted - octave * 12)
+    create_thread(root, outport, velocity, duration)
+
+
+def flip(root, outport, velocity=64, duration=0.1, axis=60, delay_time=2):
+    """play and flip"""
+    create_thread(root, outport, velocity, duration)
+    sleep(delay_time)
+    root = int(2 * axis - root)
+    create_thread(root, outport, velocity, duration)
+
+
+def triad_octave(root, outport, velocity=64, duration=0.1):
+    for i in range(10):
+        if root - i * 7 - 5 < 0:
+            break
+        # dom_seventh(root + i * 12, velocity)
+        outport.send(note(root - i * 7, velocity))
+        sleep(random.randint(1, 10)/100)
+        outport.send(note(root - i * 7, velocity))
+        sleep(random.randint(1, 10)/100)
+        outport.send(note(root - i * 7 - 5, velocity))
+        sleep(random.randint(1, 10)/100)
+        outport.send(note(root - i * 7 - 5, velocity))
+        sleep(0.2)
+        sleep(random.randint(1, 10)/100)
+        outport.send(note_off(root + i * 7, velocity))
+
+
+def create_thread(midinote, outport, velocity, elapsed):
+    thread = threading.Thread(
+        target=play, args=(midinote, outport, velocity, elapsed)
+    )
+    thread.start()
 
 
 def play(root, outport, velocity=64, duration=3):
-    # if root % 2 == 1:
-    #     # fourth_scale_down(root, velocity)
-    #     # minor_chord(root, velocity, duration)
-    #     fourth_scale(root, velocity)
-    #     # fourths(root, velocity)
-    # else:
-    #     major_seventh(root, velocity, duration)
-    #     sleep(0.1)
-    #     minor_seventh(root + 14, velocity, duration)
-    #     sleep(0.15)
-    #     major_seventh(root + 7, velocity, duration)
-    #     sleep(0.1)
-    #     fifths(root, velocity, duration)
-    #     fifth_scale(root, velocity)
-    #     fifth_scale(root, velocity, duration)
-    outport.send(note(root, velocity))
-    if duration < 2:
-        duration = 2
-    sleep(duration)
-    outport.send(note_off(root, velocity))
-    # fourth_scale(root, velocity, duration)
-    # triad_octave(root, velocity)
+    print(f"Pitch: {midi_number_to_note(root)} {velocity})")
+    if root >= 0 & root <= 127:
+        outport.send(note(root, velocity))
+        if duration < 2:
+            duration = 2
+        sleep(duration)
+        outport.send(note_off(root, velocity))
 
 
 # midi to note example from https://github.com/justinsalamon/
