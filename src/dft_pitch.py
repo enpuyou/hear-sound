@@ -18,6 +18,7 @@ lock = Lock()  # Buffer lock
 fresh_data = True  # Flag to indicate if new data is available
 args = ""
 outport = ""
+volume_norm = 0
 
 
 def audio_callback(indata, frames, time, status):
@@ -91,22 +92,11 @@ def compute_pitch(arg, out):
         bin_value = args.samplerate / len(buf2)
         max_ind = int(20000 / bin_value)
         fft = abs(np.fft.fft(buf2))
-        # print(max(fft)/norm)
+        # print(max(fft/volume_norm))
         if max_ind < len(fft):
             fft = fft[1:max_ind]
 
-        # compute amplitude
-        # amplitudes = 2 / args.samplerate * np.abs(fft)
-        velocity = volume_norm * 10
-        # print(velocity)
-        if velocity > 127:
-            velocity = 127
-        # velocity = np.sqrt(
-        #                 np.float_power(fft.real, 2)
-        #                 + np.float_power(fft.imag, 2)
-        #             )
-        # print(velocity)
-        # velocity = min(int(127 * (velocity / bin_value)), 127)
+        velocity = magnitude_norm(volume_norm)
 
         # Compute a mean of the neighboring FFT bins
         acc = 0
@@ -157,17 +147,35 @@ def compute_pitch(arg, out):
                 if args.repeat_count < 1 or same_count == args.repeat_count:
                     midinote = int(69 + 12 * math.log2(last_freq / 440))
                     note_name = midi_number_to_note(midinote)
-                    print(f"Pitch: {note_name} ({last_freq} Hz)")
+                    print(f"Pitch: {note_name} {velocity} ({last_freq} Hz)")
                     thread = threading.Thread(
                         target=play, args=(midinote, outport, int(velocity), elapsed)
                     )
                     thread.start()
 
 
-def print_sound(indata, outdata, frames, time, status):
-    volume_norm = np.linalg.norm(indata) * 10
-    print(volume_norm)
+def magnitude_fft(fft, sample):
+    # np.fft.fft returns the discrete fourier transform of the recording
+    number_of_samples = len(sample)
+    # sample_length is the length of each sample in seconds
+    sample_length = 1./args.samplerate
+    # fftfreq is a convenience function which returns the list of frequencies measured by the fft
+    frequencies = np.fft.fftfreq(number_of_samples, sample_length)
+    positive_frequency_indices = np.where(frequencies > 0)
+    # positive frequences returned by the fft
+    frequencies = frequencies[positive_frequency_indices]
+    # magnitudes of each positive frequency in the recording
+    magnitudes = abs(fft[positive_frequency_indices])
+    # some segments are louder than others, so normalize each segment
+    magnitudes = magnitudes / np.linalg.norm(magnitudes)
+    velocity = min(127 * max(magnitudes), 127)
+    return velocity
 
+
+def magnitude_norm(volume_norm):
+    # print(volume_norm)
+    velocity = min(volume_norm * 7, 127)
+    return velocity
 
 # if __name__ == "__main__":
 #     global args
