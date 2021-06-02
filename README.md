@@ -1,4 +1,4 @@
-# hearSound
+# hear-sound
 
 ## Install dependencies
 
